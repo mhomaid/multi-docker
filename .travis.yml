@@ -4,8 +4,8 @@ services:
 
 before_install:
   - docker build -t mhomaid/react-test -f ./client/Dockerfile.dev ./client
-secript:
-  - docker run stephengrider/react-test npm test -- --coverage
+script:
+  - docker run -e CI=true mhomaid/react-test npm test
 
 after_success:
   - docker build -t mhomaid/multi-client ./client
