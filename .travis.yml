@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t mhomaid/react-test -f ./client/Dockerfile.dev ./client/Dockerfile.dev
+
+secript:
+  - docker run stephengrider/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t mhomaid/multi-client ./client
+  - docker build -t mhomaid/multi-nginx ./nginx
+  - docker build -t mhomaid/multi-server ./server
+  - docker build -t mhomaid/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #Take those images and push them to docker hub 
+  - docker push mhomaid/multi-client
+  - docker push mhomaid/multi-nginx
+  - docker push mhomaid/multi-server
+  - docker push mhomaid/multi-worker
+  
